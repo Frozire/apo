@@ -43,15 +43,25 @@
 					<div class="py-2">
 						<input v-model="pack" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" placeholder="I en pakke">
 
-                    <p class="text-xl italic">Anvendelse til {{ days }} dage</p>
+                        <p class="text-xl italic">Anvendelse til {{ days }} dage</p>
 					</div>
                 </div>
 
                 <div class="w-1/2 px-4">
-                    <input v-model="date" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" autofocus type="text" placeholder="Dato">
-                    <p class="text-xl italic">{{ daysSince }}</p>
+                    <div>
+                        <input v-model="date" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" autofocus type="text" placeholder="Dato">
+                        <p class="text-xl italic">{{ daysSince }}</p>        
+                    </div>
+                
+                    <div class="py-2">
+                        <input v-model="interval" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" placeholder="Interval">
+                        <p v-if="daysLeft && interval" :class="{'text-green-400': daysLeft < 0, 'text-red-400': daysLeft > 0}" class="text-xl italic">{{ daysLeft > 0 ? daysLeft + ' dage tilbage' : Math.abs(daysLeft) + ' dage siden' }}</p>
+                    </div>
                 </div>
 				</div>
+                <div>
+                    <button @click="reset" class="bg-gray-200 hover:bg-gray-400 text-gray-500 py-2 px-4 rounded inline-flex items-center">Reset</button>
+                </div>
             </div>
         </div>
     </div>ª
@@ -64,6 +74,7 @@
                 type: null,
                 pack: null,
                 date: null,
+                interval: null,
             },
             computed: {
                 daysSince: function() {
@@ -72,7 +83,19 @@
                 },
                 days: function() {
                 	input = (this.pack / this.pills) * this.type
-                    return input ? Math.round(input * 100) / 100 : '??'
+                    return input ? Math.round(input * 100) / 100 : null
+                },
+                daysLeft: function() {
+                    return this.interval - days
+                }
+            },
+            methods: {
+                reset: function() {
+                    this.pills = null
+                    this.type = null
+                    this.pack = null
+                    this.date = null
+                    this.interval = null
                 }
             }
         })
