@@ -3,6 +3,37 @@
 <html lang="en">
 
 <head>
+    <style>
+        .myButton {
+            transition-duration: 0.4s;
+            background-color: #20b8be;
+        }
+
+        .dimsen {
+
+            color: #20b8be;
+        }
+
+        .myButton:hover {
+            background-color: #158488;
+        }
+
+
+        input[type='radio']:checked:after {
+            width: 15px;
+            height: 15px;
+            border-radius: 15px;
+            top: -2px;
+            left: -1px;
+            position: relative;
+            background-color: #20b8be;
+            content: '';
+            display: inline-block;
+            visibility: visible;
+            border: 2px solid white;
+        }
+    </style>
+
     <meta charset="utf-8">
     <!-- production version, optimized for size and speed -->
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -14,53 +45,61 @@
     <div id="app">
         <div class="flex h-screen">
             <div class="m-auto text-center">
+
+
+
+
+
+                <h1 class="text-5xl py-10 leading-6 font-medium text-gray-900">
+                    Regne<span class="dimsen">Dimsen</span>
+                </h1>
             	<div class="flex mb-4">
 				  <div class="w-1/2 px-4">
-                    <input v-model="pills" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" placeholder="Antal">
+                    <input v-model="pills" autocomplete="off" style="background:#cef5f6" class="appearance-none block w-full text-gray-700 border border-teal-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" placeholder="Antal">
                     <label class="">om</label>
 
                     <div class="flex py-2">
                         <div class="w-1/3 px-3 pretty p-default p-round">
-                            <input v-model="type" autocomplete="off" value="1" type="radio" name="radio1">
+                            <input id="dagen" v-model="type" autocomplete="off" value="1" type="radio" name="dagen">
                             <div class="state">
-                                <label>Dagen</label>
+                                <label for="dagen">Dagen</label>
                             </div>
                         </div>
                         <div class="w-1/3 px-3 pretty p-default p-round">
-                            <input v-model="type" autocomplete="off" value="7" type="radio" name="radio1">
+                            <input id="ugen" v-model="type" autocomplete="off" value="7" type="radio" name="ugen">
                             <div class="state">
-                                <label>Ugen</label>
+                                <label for="ugen">Ugen</label>
                             </div>
                         </div>
                         <div class="w-1/3 px-3 pretty p-default p-round">
-                            <input v-model="type" autocomplete="off" value="30" type="radio" name="radio1">
+                            <input id="måneden" v-model="type" autocomplete="off" value="30" type="radio" name="måneden">
                             <div class="state">
-                                <label>Måneden</label>
+                                <label for="måneden">Måneden</label>
                             </div>
                         </div>
                     </div>
 
 					<div class="py-2">
-						<input v-model="pack" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" placeholder="I en pakke">
+						<input v-model="pack" autocomplete="off" style="background:#cef5f6" class="appearance-none block w-full text-gray-700 border border-teal-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" placeholder="Antal i en pakke">
 
-                        <p class="text-xl italic">Anvendelse til {{ days }} dage</p>
+                        <p class="text-xl">Anvendelse til {{ days }} dage</p>
 					</div>
                 </div>
 
                 <div class="w-1/2 px-4">
                     <div>
-                        <input v-model="date" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" autofocus type="text" placeholder="Dato">
-                        <p class="text-xl italic">{{ daysSince }}</p>        
+                        <input v-model="date" autocomplete="off" style="background:#cef5f6" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-teal-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" autofocus type="text" placeholder="Dato">
+                        <p class="text-xl">{{ daysSince }}</p>
                     </div>
-                
+
                     <div class="py-2">
-                        <input v-model="interval" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" placeholder="Interval">
-                        <p v-if="daysLeft && interval" :class="{'text-green-400': daysLeft < 0, 'text-red-400': daysLeft > 0}" class="text-xl italic">{{ daysLeft > 0 ? daysLeft + ' dage tilbage' : Math.abs(daysLeft) + ' dage siden' }}</p>
+                        <input v-model="interval" autocomplete="off" style="background:#cef5f6" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-teal-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" placeholder="Udleveringsinterval">
+                        <p v-if="daysLeft!=='' && interval" :class="{'text-green-400': daysLeft <= 0, 'text-red-400': daysLeft > 0}" class="text-xl italic">{{ daysLeft > 0 ? daysLeft + ' dage tilbage' : Math.abs(daysLeft) + ' dage siden' }}</p>
                     </div>
                 </div>
 				</div>
                 <div>
-                    <button @click="reset" class="bg-gray-200 hover:bg-gray-400 text-gray-500 py-2 px-4 rounded inline-flex items-center">Reset</button>
+                    <button @click="reset" class="myButton text-white py-2 px-4 rounded inline-flex items-center">Nulstil</button>
                 </div>
             </div>
         </div>
