@@ -97,7 +97,9 @@
 
                     <div class="py-2">
                         <input v-model="interval" autocomplete="off" style="background:#cef5f6" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-teal-300 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" type="text" placeholder="Udleveringsinterval">
-                        <p v-if="daysLeft!=='' && interval" :class="{'text-green-400': daysLeft <= 0, 'text-red-400': daysLeft > 0}" class="text-xl italic">{{ daysLeft > 0 ? daysLeft + ' dage tilbage' : Math.abs(daysLeft) + ' dage siden' }}</p>
+                        <p v-if="daysLeft!=='' && interval" :class="{'text-green-400': isBeforeExpectedRenewal, 'text-red-400': !isBeforeExpectedRenewal}" class="text-xl italic">
+                            {{ daysLeft + (!isBeforeExpectedRenewal ?  ' dage tilbage' : ' dage siden') }}
+                        </p>
                     </div>
                 </div>
 				</div>
@@ -128,7 +130,17 @@
                     return input ? Math.round(input * 100) / 100 : null
                 },
                 daysLeft: function() {
+                    if (this.isBeforeExpectedRenewal) {
+                        return days - this.interval
+                    }
                     return this.interval - days
+                },
+                // [MTF-27-03-20022] Shows if the expected renewal date is before or after today this is
+                // done so if the interval is eg. 3 and it has been 7 days since last
+                // delivery then it would return -4, which we want to avoid. So we
+                // use this variable to check if the date is before or after today
+                isBeforeExpectedRenewal: function() {
+                    return this.interval < days
                 }
             },
             methods: {
